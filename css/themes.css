@@ -1,0 +1,504 @@
+/* ============================================================================
+   PDF Reader Pro - Theme System
+   Advanced theming with dark mode, reading modes, and accessibility
+   ============================================================================ */
+
+/* ============================================================================
+   Dark Theme Variables
+   ============================================================================ */
+
+.theme-dark {
+  /* Primary Colors - Dark Theme */
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --primary-light: rgba(59, 130, 246, 0.1);
+  --secondary-color: #9ca3af;
+  --accent-color: #fbbf24;
+  
+  /* Background Colors - Dark Theme */
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --bg-tertiary: #374151;
+  --bg-overlay: rgba(0, 0, 0, 0.7);
+  
+  /* Text Colors - Dark Theme */
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-tertiary: #9ca3af;
+  --text-inverse: #111827;
+  
+  /* Border Colors - Dark Theme */
+  --border-light: #374151;
+  --border-medium: #4b5563;
+  --border-dark: #6b7280;
+  
+  /* Status Colors - Dark Theme */
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #f87171;
+  --info-color: #60a5fa;
+  
+  /* Shadows - Dark Theme */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================================================
+   Reading Mode Theme
+   ============================================================================ */
+
+.theme-reading {
+  /* Optimized for comfortable reading */
+  --bg-primary: #fefbf3;
+  --bg-secondary: #f7f3e9;
+  --bg-tertiary: #f0ead6;
+  --text-primary: #2d2006;
+  --text-secondary: #5c4a1b;
+  --text-tertiary: #8b7355;
+  --border-light: #e5dcc9;
+  --border-medium: #d4c5a9;
+  --border-dark: #c3b091;
+}
+
+.theme-dark.theme-reading {
+  /* Dark reading mode */
+  --bg-primary: #1a1611;
+  --bg-secondary: #2a241c;
+  --bg-tertiary: #3a3227;
+  --text-primary: #f0ead6;
+  --text-secondary: #d4c5a9;
+  --text-tertiary: #b8a082;
+  --border-light: #3a3227;
+  --border-medium: #4a4035;
+  --border-dark: #5a4e43;
+}
+
+/* ============================================================================
+   High Contrast Theme (Accessibility)
+   ============================================================================ */
+
+.theme-high-contrast {
+  --primary-color: #0066cc;
+  --primary-hover: #0052a3;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f0f0f0;
+  --bg-tertiary: #e0e0e0;
+  --text-primary: #000000;
+  --text-secondary: #333333;
+  --text-tertiary: #666666;
+  --border-light: #cccccc;
+  --border-medium: #999999;
+  --border-dark: #666666;
+}
+
+.theme-high-contrast.theme-dark {
+  --primary-color: #66b3ff;
+  --primary-hover: #4da6ff;
+  --bg-primary: #000000;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #333333;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --text-tertiary: #999999;
+  --border-light: #333333;
+  --border-medium: #666666;
+  --border-dark: #999999;
+}
+
+/* ============================================================================
+   Theme Transitions
+   ============================================================================ */
+
+body {
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+.header,
+.sidebar,
+.workspace,
+.status-bar,
+.modal-container,
+.notification,
+.context-menu {
+  transition: background-color var(--transition-normal), border-color var(--transition-normal);
+}
+
+/* ============================================================================
+   Dark Theme Specific Adjustments
+   ============================================================================ */
+
+.theme-dark .pdf-canvas {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+}
+
+.theme-dark .loading-screen {
+  background: linear-gradient(135deg, #1f2937, #111827);
+}
+
+.theme-dark .welcome-icon {
+  background: linear-gradient(135deg, var(--primary-color), #1e40af);
+}
+
+.theme-dark .file-upload-area {
+  border-color: var(--border-medium);
+}
+
+.theme-dark .file-upload-area:hover,
+.theme-dark .file-upload-area.dragover {
+  background: rgba(59, 130, 246, 0.05);
+}
+
+/* ============================================================================
+   PDF Viewer Theme Adjustments
+   ============================================================================ */
+
+.theme-dark .pdf-canvas-container {
+  background: var(--bg-tertiary);
+}
+
+.theme-reading .pdf-canvas-container {
+  background: var(--bg-secondary);
+}
+
+/* Text layer adjustments for different themes */
+.theme-dark .text-layer .textLayer .highlight {
+  background-color: rgba(251, 191, 36, 0.4);
+}
+
+.theme-reading .text-layer .textLayer .highlight {
+  background-color: rgba(245, 158, 11, 0.3);
+}
+
+/* ============================================================================
+   Form Elements Theme Adjustments
+   ============================================================================ */
+
+.theme-dark .form-input,
+.theme-dark .form-textarea,
+.theme-dark .form-select {
+  background: var(--bg-tertiary);
+  border-color: var(--border-medium);
+  color: var(--text-primary);
+}
+
+.theme-dark .form-input:focus,
+.theme-dark .form-textarea:focus,
+.theme-dark .form-select:focus {
+  background: var(--bg-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* ============================================================================
+   Scrollbar Theme Adjustments
+   ============================================================================ */
+
+.theme-dark ::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+}
+
+.theme-dark ::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+}
+
+.theme-dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--border-dark);
+}
+
+/* ============================================================================
+   Animation Adjustments for Themes
+   ============================================================================ */
+
+.theme-dark .progress-fill::after {
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+}
+
+.theme-reading .progress-fill {
+  background: linear-gradient(90deg, #92400e, #b45309);
+}
+
+/* ============================================================================
+   Print Mode Adjustments
+   ============================================================================ */
+
+@media print {
+  /* Force light theme for printing */
+  * {
+    background: white !important;
+    color: black !important;
+    border-color: #ccc !important;
+  }
+  
+  .pdf-canvas {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+}
+
+/* ============================================================================
+   Reduced Motion Support
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .loading-spinner .spinner {
+    animation: none;
+    border: 4px solid var(--border-medium);
+  }
+  
+  .progress-fill::after {
+    animation: none;
+  }
+}
+
+/* ============================================================================
+   Focus Management for Accessibility
+   ============================================================================ */
+
+.focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.theme-dark .focus-visible {
+  outline-color: var(--primary-color);
+}
+
+.theme-high-contrast .focus-visible {
+  outline: 3px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Remove default focus styles when not using keyboard navigation */
+:focus:not(.focus-visible) {
+  outline: none;
+}
+
+/* ============================================================================
+   Screen Reader Only Content
+   ============================================================================ */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================================
+   Theme Toggle Button Styles
+   ============================================================================ */
+
+.theme-toggle {
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-toggle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  background: var(--primary-light);
+  border-radius: 50%;
+  transition: all var(--transition-normal);
+  z-index: 0;
+}
+
+.theme-toggle:hover::before {
+  width: 100%;
+  height: 100%;
+}
+
+.theme-toggle i {
+  position: relative;
+  z-index: 1;
+  transition: transform var(--transition-normal);
+}
+
+.theme-dark .theme-toggle i::before {
+  content: '\f186'; /* sun icon */
+}
+
+.theme-light .theme-toggle i::before {
+  content: '\f186'; /* moon icon */
+}
+
+/* ============================================================================
+   Custom Theme Variables for Different PDF Tools
+   ============================================================================ */
+
+/* Editor Tool Theme */
+.tool-workspace[data-tool="editor"] {
+  --tool-primary: #059669;
+  --tool-secondary: #d1fae5;
+}
+
+.theme-dark .tool-workspace[data-tool="editor"] {
+  --tool-primary: #10b981;
+  --tool-secondary: rgba(16, 185, 129, 0.1);
+}
+
+/* Converter Tool Theme */
+.tool-workspace[data-tool="converter"] {
+  --tool-primary: #dc2626;
+  --tool-secondary: #fef2f2;
+}
+
+.theme-dark .tool-workspace[data-tool="converter"] {
+  --tool-primary: #f87171;
+  --tool-secondary: rgba(248, 113, 113, 0.1);
+}
+
+/* Scanner Tool Theme */
+.tool-workspace[data-tool="scanner"] {
+  --tool-primary: #7c3aed;
+  --tool-secondary: #f3e8ff;
+}
+
+.theme-dark .tool-workspace[data-tool="scanner"] {
+  --tool-primary: #a78bfa;
+  --tool-secondary: rgba(167, 139, 250, 0.1);
+}
+
+/* Signature Tool Theme */
+.tool-workspace[data-tool="signature"] {
+  --tool-primary: #ea580c;
+  --tool-secondary: #fff7ed;
+}
+
+.theme-dark .tool-workspace[data-tool="signature"] {
+  --tool-primary: #fb923c;
+  --tool-secondary: rgba(251, 146, 60, 0.1);
+}
+
+/* Security Tool Theme */
+.tool-workspace[data-tool="security"] {
+  --tool-primary: #991b1b;
+  --tool-secondary: #fef2f2;
+}
+
+.theme-dark .tool-workspace[data-tool="security"] {
+  --tool-primary: #fca5a5;
+  --tool-secondary: rgba(252, 165, 165, 0.1);
+}
+
+/* ============================================================================
+   Seasonal/Special Themes (Optional)
+   ============================================================================ */
+
+.theme-blueprint {
+  --primary-color: #0ea5e9;
+  --bg-primary: #0c4a6e;
+  --bg-secondary: #075985;
+  --bg-tertiary: #0369a1;
+  --text-primary: #e0f2fe;
+  --text-secondary: #b3e5fc;
+  --text-tertiary: #81d4fa;
+  --border-light: #0369a1;
+  --border-medium: #0284c7;
+  --border-dark: #0ea5e9;
+}
+
+.theme-neon {
+  --primary-color: #06ffa5;
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #1a1a1a;
+  --text-primary: #ffffff;
+  --text-secondary: #06ffa5;
+  --text-tertiary: #39ff14;
+  --border-light: #333333;
+  --border-medium: #06ffa5;
+  --border-dark: #39ff14;
+  --shadow-md: 0 4px 6px -1px rgba(6, 255, 165, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(6, 255, 165, 0.2);
+}
+
+/* ============================================================================
+   Theme Persistence
+   ============================================================================ */
+
+/* These styles ensure theme changes are applied immediately */
+html[data-theme="dark"] body {
+  background-color: #111827;
+  color: #f9fafb;
+}
+
+html[data-theme="light"] body {
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+html[data-theme="reading"] body {
+  background-color: #fefbf3;
+  color: #2d2006;
+}
+
+/* ============================================================================
+   Responsive Theme Adjustments
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .theme-toggle {
+    width: 36px;
+    height: 36px;
+  }
+  
+  /* Simplify shadows on mobile for better performance */
+  .theme-dark .pdf-canvas {
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+/* ============================================================================
+   System Theme Detection
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    /* Apply dark theme variables when system prefers dark */
+    --primary-color: #3b82f6;
+    --primary-hover: #2563eb;
+    --primary-light: rgba(59, 130, 246, 0.1);
+    --bg-primary: #111827;
+    --bg-secondary: #1f2937;
+    --bg-tertiary: #374151;
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --text-tertiary: #9ca3af;
+    --border-light: #374151;
+    --border-medium: #4b5563;
+    --border-dark: #6b7280;
+  }
+}
+
+/* ============================================================================
+   Color Blind Friendly Adjustments
+   ============================================================================ */
+
+@media (prefers-contrast: high) {
+  :root {
+    --primary-color: #0066cc;
+    --success-color: #008000;
+    --warning-color: #ff8c00;
+    --error-color: #dc143c;
+    --border-light: #808080;
+    --border-medium: #606060;
+    --border-dark: #404040;
+  }
+}

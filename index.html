@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Reader Pro - Complete PDF Solution</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+    
+    <!-- Additional Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body class="theme-light">
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <h3>PDF Reader Pro</h3>
+            <p>Loading your complete PDF solution...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-file-pdf logo-icon"></i>
+                <span class="logo-text">PDF Reader Pro</span>
+            </div>
+            
+            <nav class="main-nav">
+                <button class="nav-btn active" data-tool="viewer">
+                    <i class="fas fa-eye"></i>
+                    <span>View</span>
+                </button>
+                <button class="nav-btn" data-tool="editor">
+                    <i class="fas fa-edit"></i>
+                    <span>Edit</span>
+                </button>
+                <button class="nav-btn" data-tool="converter">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Convert</span>
+                </button>
+                <button class="nav-btn" data-tool="scanner">
+                    <i class="fas fa-camera"></i>
+                    <span>Scan</span>
+                </button>
+                <button class="nav-btn" data-tool="signature">
+                    <i class="fas fa-signature"></i>
+                    <span>Sign</span>
+                </button>
+                <button class="nav-btn" data-tool="forms">
+                    <i class="fas fa-wpforms"></i>
+                    <span>Forms</span>
+                </button>
+                <button class="nav-btn" data-tool="security">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure</span>
+                </button>
+                <button class="nav-btn" data-tool="tools">
+                    <i class="fas fa-tools"></i>
+                    <span>Tools</span>
+                </button>
+            </nav>
+            
+            <div class="header-actions">
+                <button class="btn-icon theme-toggle" id="theme-toggle" title="Toggle Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="btn-icon" id="settings-btn" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="btn-primary" id="open-file-btn">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Open PDF</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <!-- File Manager Section -->
+            <div class="sidebar-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-folder"></i> Files</h3>
+                    <div class="section-actions">
+                        <button class="btn-icon" id="new-folder" title="New Folder">
+                            <i class="fas fa-folder-plus"></i>
+                        </button>
+                        <button class="btn-icon" id="upload-files" title="Upload Files">
+                            <i class="fas fa-upload"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="file-search">
+                    <div class="search-input">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="file-search-input" placeholder="Search files...">
+                    </div>
+                </div>
+                
+                <div class="quick-access">
+                    <div class="quick-item active" data-category="recent">
+                        <i class="fas fa-clock"></i>
+                        <span>Recent</span>
+                        <span class="count">0</span>
+                    </div>
+                    <div class="quick-item" data-category="starred">
+                        <i class="fas fa-star"></i>
+                        <span>Starred</span>
+                        <span class="count">0</span>
+                    </div>
+                    <div class="quick-item" data-category="shared">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Shared</span>
+                        <span class="count">0</span>
+                    </div>
+                </div>
+                
+                <div class="file-list" id="file-list">
+                    <div class="empty-state">
+                        <i class="fas fa-folder-open"></i>
+                        <p>No files yet</p>
+                        <p class="small">Upload or scan documents to get started</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tool Panel -->
+            <div class="sidebar-section" id="tool-panel">
+                <div class="section-header">
+                    <h3 id="tool-panel-title"><i class="fas fa-eye"></i> Viewer</h3>
+                </div>
+                <div class="tool-content" id="tool-content">
+                    <!-- Tool-specific content will be injected here -->
+                </div>
+            </div>
+            
+            <!-- Storage Info -->
+            <div class="sidebar-section storage-info">
+                <div class="storage-bar">
+                    <div class="storage-used" style="width: 0%"></div>
+                </div>
+                <div class="storage-text">
+                    <span id="storage-used">0 MB</span> of <span id="storage-total">1 GB</span> used
+                </div>
+            </div>
+        </aside>
+
+        <!-- Workspace -->
+        <main class="workspace">
+            <!-- Viewer Workspace -->
+            <div class="workspace-content active" id="viewer-workspace">
+                <div class="pdf-viewer-container" id="pdf-viewer-container">
+                    <!-- Viewer Toolbar -->
+                    <div class="viewer-toolbar">
+                        <div class="toolbar-group">
+                            <button class="btn-icon" id="prev-page" title="Previous Page">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="btn-icon" id="next-page" title="Next Page">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <input type="number" class="page-input" id="page-input" min="1" value="1">
+                            <span class="page-count">of <span id="total-pages">0</span></span>
+                        </div>
+                        
+                        <div class="toolbar-group">
+                            <button class="btn-icon" id="zoom-out" title="Zoom Out">
+                                <i class="fas fa-search-minus"></i>
+                            </button>
+                            <span class="zoom-display" id="zoom-display">100%</span>
+                            <button class="btn-icon" id="zoom-in" title="Zoom In">
+                                <i class="fas fa-search-plus"></i>
+                            </button>
+                            <button class="btn-icon" id="fit-width" title="Fit Width">
+                                <i class="fas fa-arrows-alt-h"></i>
+                            </button>
+                            <button class="btn-icon" id="fit-page" title="Fit Page">
+                                <i class="fas fa-expand-arrows-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="toolbar-group">
+                            <button class="btn-icon" id="rotate-left" title="Rotate Left">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                            <button class="btn-icon" id="rotate-right" title="Rotate Right">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                            <button class="btn-icon" id="fullscreen" title="Fullscreen">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- PDF Canvas Container -->
+                    <div class="pdf-canvas-container" id="pdf-canvas-container">
+                        <canvas id="pdf-canvas" class="pdf-canvas"></canvas>
+                        <div class="text-layer" id="text-layer"></div>
+                        <div class="annotation-layer" id="annotation-layer"></div>
+                    </div>
+                </div>
+                
+                <!-- No Document State -->
+                <div class="no-document-state" id="no-document-state">
+                    <div class="welcome-content">
+                        <div class="welcome-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <h2>Welcome to PDF Reader Pro</h2>
+                        <p>Your complete PDF solution with professional-grade tools</p>
+                        
+                        <div class="welcome-actions">
+                            <button class="btn-primary btn-large" id="welcome-open-file">
+                                <i class="fas fa-folder-open"></i>
+                                <span>Open PDF</span>
+                            </button>
+                            <button class="btn-secondary btn-large" id="welcome-scan">
+                                <i class="fas fa-camera"></i>
+                                <span>Scan Document</span>
+                            </button>
+                        </div>
+                        
+                        <div class="welcome-features">
+                            <div class="feature-item">
+                                <i class="fas fa-edit"></i>
+                                <span>Edit Text & Images</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-exchange-alt"></i>
+                                <span>Convert to Word/Excel</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-signature"></i>
+                                <span>Digital Signatures</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Password Protection</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Editor Workspace -->
+            <div class="workspace-content" id="editor-workspace">
+                <div class="editor-container">
+                    <div class="editor-toolbar">
+                        <div class="tool-group">
+                            <button class="tool-btn active" data-tool="text">
+                                <i class="fas fa-font"></i>
+                                <span>Text</span>
+                            </button>
+                            <button class="tool-btn" data-tool="draw">
+                                <i class="fas fa-pen"></i>
+                                <span>Draw</span>
+                            </button>
+                            <button class="tool-btn" data-tool="shape">
+                                <i class="fas fa-shapes"></i>
+                                <span>Shape</span>
+                            </button>
+                            <button class="tool-btn" data-tool="image">
+                                <i class="fas fa-image"></i>
+                                <span>Image</span>
+                            </button>
+                        </div>
+                        
+                        <div class="edit-controls">
+                            <button class="btn-icon" id="undo" title="Undo">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                            <button class="btn-icon" id="redo" title="Redo">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                            <button class="btn-secondary" id="save-changes">
+                                <i class="fas fa-save"></i>
+                                <span>Save</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="editor-content">
+                        <!-- PDF editing canvas will be here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Converter Workspace -->
+            <div class="workspace-content" id="converter-workspace">
+                <!-- Converter content will be injected by JavaScript -->
+            </div>
+
+            <!-- Scanner Workspace -->
+            <div class="workspace-content" id="scanner-workspace">
+                <!-- Scanner content will be injected by JavaScript -->
+            </div>
+
+            <!-- Signature Workspace -->
+            <div class="workspace-content" id="signature-workspace">
+                <!-- Signature content will be injected by JavaScript -->
+            </div>
+
+            <!-- Forms Workspace -->
+            <div class="workspace-content" id="forms-workspace">
+                <div class="forms-container">
+                    <div class="forms-header">
+                        <h2><i class="fas fa-wpforms"></i> Form Filler</h2>
+                        <p>Fill PDF forms quickly and accurately</p>
+                    </div>
+                    <div class="forms-content">
+                        <div class="empty-state">
+                            <i class="fas fa-wpforms"></i>
+                            <h3>No Form Fields Detected</h3>
+                            <p>Open a PDF with form fields to start filling them out</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Workspace -->
+            <div class="workspace-content" id="security-workspace">
+                <!-- Security content will be injected by JavaScript -->
+            </div>
+
+            <!-- Tools Workspace -->
+            <div class="workspace-content" id="tools-workspace">
+                <!-- Tools content will be injected by JavaScript -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-info">
+            <span id="status-message">Ready</span>
+        </div>
+        <div class="status-actions">
+            <div class="progress-container" id="progress-container" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <span class="progress-text" id="progress-text">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden File Input -->
+    <input type="file" id="file-input" accept=".pdf,image/*" multiple style="display: none;">
+
+    <!-- Modals and Overlays -->
+    <div id="modal-overlay" class="modal-overlay" style="display: none;">
+        <!-- Dynamic modals will be inserted here -->
+    </div>
+
+    <!-- Context Menu -->
+    <div id="context-menu" class="context-menu" style="display: none;">
+        <!-- Context menu items will be populated dynamically -->
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+    
+    <!-- Load Modules -->
+    <script src="js/modules/pdf-engine.js"></script>
+    <script src="js/modules/pdf-viewer.js"></script>
+    <script src="js/modules/pdf-editor.js"></script>
+    <script src="js/modules/pdf-converter.js"></script>
+    <script src="js/modules/pdf-signature.js"></script>
+    <script src="js/modules/document-scanner.js"></script>
+    <script src="js/modules/file-manager.js"></script>
+    <script src="js/modules/pdf-security.js"></script>
+    <script src="js/modules/pdf-tools.js"></script>
+    
+    <!-- Main App -->
+    <script src="js/app.js"></script>
+    
+    <script>
+        // Initialize the application when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.pdfReaderPro = new PDFReaderPro();
+        });
+    </script>
+</body>
+</html>
