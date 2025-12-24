@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Reader Pro - Working Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f8fafc; }
+        .header { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 1rem; text-align: center; }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        .upload-area { border: 3px dashed #cbd5e1; border-radius: 12px; padding: 2rem; text-align: center; background: white; margin-bottom: 2rem; cursor: pointer; transition: all 0.3s; }
+        .upload-area:hover { border-color: #2563eb; background: #f0f7ff; }
+        .upload-icon { font-size: 3rem; color: #64748b; margin-bottom: 1rem; }
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .tool-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; transition: transform 0.3s, box-shadow 0.3s; }
+        .tool-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .tool-icon { font-size: 2.5rem; color: #2563eb; margin-bottom: 1rem; }
+        .tool-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; color: #1e293b; }
+        .tool-desc { color: #64748b; margin-bottom: 1rem; }
+        .btn { background: #2563eb; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 500; transition: background 0.3s; }
+        .btn:hover { background: #1d4ed8; }
+        .pdf-viewer { display: none; background: white; border-radius: 12px; padding: 1rem; margin-top: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .viewer-controls { display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid #e2e8f0; }
+        .canvas-container { text-align: center; padding: 2rem; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 PDF Reader Pro</h1>
+        <p>Complete PDF solution - Edit, convert, sign, and manage PDFs</p>
+    </div>
+
+    <div class="container">
+        <div class="upload-area" onclick="document.getElementById('pdfInput').click()">
+            <div class="upload-icon">📄</div>
+            <h3>Drop your PDF here or click to upload</h3>
+            <p>Support for PDF files up to 50MB</p>
+            <input type="file" id="pdfInput" accept=".pdf" style="display: none;">
+        </div>
+
+        <div class="pdf-viewer" id="pdfViewer">
+            <div class="viewer-controls">
+                <button class="btn" onclick="prevPage()">← Previous</button>
+                <span>Page <span id="pageNum">1</span> of <span id="pageCount">1</span></span>
+                <button class="btn" onclick="nextPage()">Next →</button>
+                <button class="btn" onclick="zoomOut()">Zoom Out</button>
+                <span id="zoomLevel">100%</span>
+                <button class="btn" onclick="zoomIn()">Zoom In</button>
+            </div>
+            <div class="canvas-container">
+                <canvas id="pdfCanvas"></canvas>
+            </div>
+        </div>
+
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="tool-icon">✏️</div>
+                <h3 class="tool-title">PDF Editor</h3>
+                <p class="tool-desc">Edit text, add images, annotations, and signatures</p>
+                <button class="btn">Start Editing</button>
+            </div>
+            
+            <div class="tool-card">
+                <div class="tool-icon">🔄</div>
+                <h3 class="tool-title">PDF Converter</h3>
+                <p class="tool-desc">Convert PDFs to Word, Excel, PowerPoint, and images</p>
+                <button class="btn">Convert Files</button>
+            </div>
+            
+            <div class="tool-card">
+                <div class="tool-icon">✍️</div>
+                <h3 class="tool-title">Digital Signature</h3>
+                <p class="tool-desc">Sign documents electronically and fill forms</p>
+                <button class="btn">Sign Document</button>
+            </div>
+            
+            <div class="tool-card">
+                <div class="tool-icon">📷</div>
+                <h3 class="tool-title">Document Scanner</h3>
+                <p class="tool-desc">Scan paper documents with your camera</p>
+                <button class="btn">Scan Document</button>
+            </div>
+            
+            <div class="tool-card">
+                <div class="tool-icon">🔒</div>
+                <h3 class="tool-title">Protect PDF</h3>
+                <p class="tool-desc">Add passwords, watermarks, and encryption</p>
+                <button class="btn">Secure PDF</button>
+            </div>
+            
+            <div class="tool-card">
+                <div class="tool-icon">🛠️</div>
+                <h3 class="tool-title">PDF Tools</h3>
+                <p class="tool-desc">Merge, split, compress, and organize PDFs</p>
+                <button class="btn">Use Tools</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // PDF.js setup
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        let pdfDoc = null;
+        let pageNum = 1;
+        let scale = 1.0;
+        const canvas = document.getElementById('pdfCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // File upload handler
+        document.getElementById('pdfInput').addEventListener('change', handleFile);
+
+        function handleFile(e) {
+            const file = e.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                const fileReader = new FileReader();
+                fileReader.onload = function(event) {
+                    const typedarray = new Uint8Array(event.target.result);
+                    loadPDF(typedarray);
+                };
+                fileReader.readAsArrayBuffer(file);
+            }
+        }
+
+        function loadPDF(data) {
+            pdfjsLib.getDocument(data).promise.then(function(pdf) {
+                pdfDoc = pdf;
+                document.getElementById('pageCount').textContent = pdf.numPages;
+                document.getElementById('pdfViewer').style.display = 'block';
+                renderPage(pageNum);
+            });
+        }
+
+        function renderPage(num) {
+            pdfDoc.getPage(num).then(function(page) {
+                const viewport = page.getViewport({scale: scale});
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                
+                page.render(renderContext);
+                document.getElementById('pageNum').textContent = num;
+            });
+        }
+
+        function prevPage() {
+            if (pageNum <= 1) return;
+            pageNum--;
+            renderPage(pageNum);
+        }
+
+        function nextPage() {
+            if (pageNum >= pdfDoc.numPages) return;
+            pageNum++;
+            renderPage(pageNum);
+        }
+
+        function zoomIn() {
+            scale += 0.1;
+            document.getElementById('zoomLevel').textContent = Math.round(scale * 100) + '%';
+            renderPage(pageNum);
+        }
+
+        function zoomOut() {
+            if (scale <= 0.2) return;
+            scale -= 0.1;
+            document.getElementById('zoomLevel').textContent = Math.round(scale * 100) + '%';
+            renderPage(pageNum);
+        }
+    </script>
+</body>
+</html>

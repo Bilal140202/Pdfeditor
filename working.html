@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Reader Pro - Complete Solution</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; color: #1e293b; }
+        .header { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 1.5rem; box-shadow: 0 4px 20px rgba(37,99,235,0.3); }
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .header p { opacity: 0.9; font-size: 1.1rem; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .upload-section { background: white; border: 3px dashed #cbd5e1; border-radius: 16px; padding: 3rem; text-align: center; margin-bottom: 3rem; cursor: pointer; transition: all 0.3s; }
+        .upload-section:hover { border-color: #2563eb; background: #f0f7ff; transform: translateY(-2px); }
+        .upload-icon { font-size: 4rem; color: #64748b; margin-bottom: 1rem; }
+        .upload-text { font-size: 1.2rem; color: #64748b; margin-bottom: 1rem; }
+        .upload-subtext { color: #94a3b8; }
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem; }
+        .tool-card { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; transition: all 0.3s; cursor: pointer; border: 1px solid #e2e8f0; }
+        .tool-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.15); border-color: #2563eb; }
+        .tool-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .tool-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .tool-desc { color: #64748b; line-height: 1.6; }
+        .pdf-viewer { display: none; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); padding: 2rem; }
+        .viewer-controls { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.3s; }
+        .btn-primary { background: #2563eb; color: white; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-secondary { background: #f1f5f9; color: #475569; }
+        .btn-secondary:hover { background: #e2e8f0; }
+        #pdf-canvas { border: 2px solid #e2e8f0; border-radius: 12px; max-width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .page-info { font-weight: 600; color: #1e293b; }
+        input[type="file"] { display: none; }
+        .feature-badge { background: #10b981; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+    <div class="header">
+        <div class="container" style="padding: 0;">
+            <h1>📚 PDF Reader Pro</h1>
+            <p>Complete PDF solution - Edit, convert, sign, and manage PDFs with professional-grade tools</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="upload-area" class="upload-section">
+            <div class="upload-icon">📄</div>
+            <div class="upload-text">Drop your PDF here or click to browse</div>
+            <div class="upload-subtext">Supports PDF files up to 100MB</div>
+            <input type="file" id="pdf-input" accept=".pdf" />
+        </div>
+
+        <div id="pdf-viewer" class="pdf-viewer">
+            <div class="viewer-controls">
+                <button class="btn btn-secondary" id="prev-page">← Previous</button>
+                <span class="page-info" id="page-info">Page 1 of 1</span>
+                <button class="btn btn-secondary" id="next-page">Next →</button>
+                <button class="btn btn-secondary" id="zoom-out">🔍-</button>
+                <span id="zoom-level">100%</span>
+                <button class="btn btn-secondary" id="zoom-in">🔍+</button>
+                <button class="btn btn-primary" id="download-pdf">💾 Download</button>
+            </div>
+            <div style="text-align: center;">
+                <canvas id="pdf-canvas"></canvas>
+            </div>
+        </div>
+
+        <div class="tools-grid">
+            <div class="tool-card" onclick="alert('PDF Editor: Edit text, add images, annotations, and more!')">
+                <div class="tool-icon">✏️</div>
+                <div class="tool-title">PDF Editor <span class="feature-badge">NEW</span></div>
+                <div class="tool-desc">Edit PDF text and images directly. Add annotations, highlights, and comments with professional tools.</div>
+            </div>
+            
+            <div class="tool-card" onclick="alert('PDF Converter: Convert PDFs to Word, Excel, PowerPoint, images and more!')">
+                <div class="tool-icon">🔄</div>
+                <div class="tool-title">PDF Converter</div>
+                <div class="tool-desc">Convert PDFs to Word, Excel, PowerPoint, and images. Also convert images and documents to PDF.</div>
+            </div>
+            
+            <div class="tool-card" onclick="alert('Digital Signature: Sign PDFs securely with legal e-signatures!')">
+                <div class="tool-icon">✍️</div>
+                <div class="tool-title">Digital Signature</div>
+                <div class="tool-desc">Sign PDFs with secure digital signatures. Create custom signatures and fill forms efficiently.</div>
+            </div>
+            
+            <div class="tool-card" onclick="alert('Document Scanner: Scan papers to PDF with your camera!')">
+                <div class="tool-icon">📷</div>
+                <div class="tool-title">Document Scanner</div>
+                <div class="tool-desc">Scan physical documents using your device camera. Auto-enhance and convert to searchable PDFs.</div>
+            </div>
+            
+            <div class="tool-card" onclick="alert('PDF Security: Protect your PDFs with passwords and watermarks!')">
+                <div class="tool-icon">🔐</div>
+                <div class="tool-title">PDF Security</div>
+                <div class="tool-desc">Password-protect PDFs, add watermarks, and control document permissions for secure sharing.</div>
+            </div>
+            
+            <div class="tool-card" onclick="alert('Advanced Tools: Merge, split, compress PDFs and more!')">
+                <div class="tool-icon">🛠️</div>
+                <div class="tool-title">Advanced Tools</div>
+                <div class="tool-desc">Merge multiple PDFs, split large files, compress for smaller size, and extract pages or text.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // PDF.js setup
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        let pdfDoc = null;
+        let pageNum = 1;
+        let pageRendering = false;
+        let pageNumPending = null;
+        let scale = 1.5;
+        
+        const canvas = document.getElementById('pdf-canvas');
+        const ctx = canvas.getContext('2d');
+        const uploadArea = document.getElementById('upload-area');
+        const pdfInput = document.getElementById('pdf-input');
+        const pdfViewer = document.getElementById('pdf-viewer');
+        
+        // Upload handling
+        uploadArea.onclick = () => pdfInput.click();
+        
+        uploadArea.ondragover = (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#2563eb';
+            uploadArea.style.background = '#f0f7ff';
+        };
+        
+        uploadArea.ondragleave = () => {
+            uploadArea.style.borderColor = '#cbd5e1';
+            uploadArea.style.background = 'white';
+        };
+        
+        uploadArea.ondrop = (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#cbd5e1';
+            uploadArea.style.background = 'white';
+            const files = e.dataTransfer.files;
+            if (files[0] && files[0].type === 'application/pdf') {
+                loadPDF(files[0]);
+            }
+        };
+        
+        pdfInput.onchange = (e) => {
+            if (e.target.files[0]) {
+                loadPDF(e.target.files[0]);
+            }
+        };
+        
+        function loadPDF(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const typedarray = new Uint8Array(e.target.result);
+                
+                pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+                    pdfDoc = pdf;
+                    pageNum = 1;
+                    renderPage(pageNum);
+                    
+                    // Show viewer, hide upload
+                    uploadArea.style.display = 'none';
+                    pdfViewer.style.display = 'block';
+                    
+                    // Update UI
+                    updatePageInfo();
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        function renderPage(num) {
+            pageRendering = true;
+            
+            pdfDoc.getPage(num).then(function(page) {
+                const viewport = page.getViewport({scale: scale});
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                
+                const renderTask = page.render(renderContext);
+                
+                renderTask.promise.then(function() {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+        }
+        
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+        
+        function updatePageInfo() {
+            document.getElementById('page-info').textContent = ;
+            document.getElementById('zoom-level').textContent = Math.round(scale * 100) + '%';
+        }
+        
+        // Controls
+        document.getElementById('prev-page').onclick = () => {
+            if (pageNum <= 1) return;
+            pageNum--;
+            queueRenderPage(pageNum);
+            updatePageInfo();
+        };
+        
+        document.getElementById('next-page').onclick = () => {
+            if (pageNum >= pdfDoc.numPages) return;
+            pageNum++;
+            queueRenderPage(pageNum);
+            updatePageInfo();
+        };
+        
+        document.getElementById('zoom-in').onclick = () => {
+            scale += 0.25;
+            queueRenderPage(pageNum);
+            updatePageInfo();
+        };
+        
+        document.getElementById('zoom-out').onclick = () => {
+            if (scale <= 0.5) return;
+            scale -= 0.25;
+            queueRenderPage(pageNum);
+            updatePageInfo();
+        };
+        
+        document.getElementById('download-pdf').onclick = () => {
+            if (pdfInput.files[0]) {
+                const url = URL.createObjectURL(pdfInput.files[0]);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = pdfInput.files[0].name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        };
+    </script>
+</body>
+</html>
