@@ -1,0 +1,15 @@
+﻿# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+.idea/
+.vscode/
+
+# Build / Output
+dist/
+build/
+out/
+*.log
+
+# NOTE: .ai_build_plan.md is INTENTIONALLY NOT IGNORED to allow in-repo AI sync.
